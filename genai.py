@@ -4,9 +4,20 @@ import json
 from PIL import Image
 import io
 import zipfile
+from openai import OpenAI
 
-
-API_KEY = st.secrets["OPEN_API_KEY"]
+# Get API key from secrets, with fallback
+try:
+    API_KEY = st.secrets["OPENROUTER_API_KEY"]
+    # Initialize OpenRouter client
+    client = OpenAI(
+        base_url="https://openrouter.ai/api/v1",
+        api_key=API_KEY,
+    )
+except Exception:
+    API_KEY = "your-api-key-not-set"
+    client = None
+    st.warning("⚠️ OpenRouter API key not set. Please add your OPENROUTER_API_KEY to .streamlit/secrets.toml")
 # Initialize session state
 if 'page' not in st.session_state:
     st.session_state.page = 'home'
